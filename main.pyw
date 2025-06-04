@@ -67,19 +67,20 @@ class Main_App(CTk.CTk):
             cooldowns[key]=False
 
         def display(x,y,button,pressed):
-            if self.current_key==None: return
             if not pressed: return
-            if not self.current_key in cooldowns.keys(): return
+            if self.current_key==None: return
             if cooldowns[self.current_key] == True: return
             
             parent=left_frame
             if left_counter.get() > 5:
                 parent=right_frame
 
-            Hotkey_Display(parent,saves['keybinds'][self.current_key],saves['cooldowns'][saves['keybinds'][self.current_key]])
+            keybind_name=saves['keybinds'][self.current_key]
+            keybind_time=saves['cooldowns'][keybind_name]
+            Hotkey_Display(parent,keybind_name,keybind_time)
 
             stored_key=self.current_key
-            self.after(int(saves['cooldowns'][saves['keybinds'][self.current_key]])*1000,lambda: timed(stored_key))
+            self.after(int(keybind_time)*1000,lambda: timed(stored_key))
 
             left_counter.set(left_counter.get()+1)
 
