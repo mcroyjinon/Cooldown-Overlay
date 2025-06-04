@@ -65,6 +65,7 @@ class Main_App(CTk.CTk):
 
         def timed(key):
             cooldowns[key]=False
+            left_counter.set(left_counter.get()-1)
 
         def display(x,y,button,pressed):
             if not pressed: return
