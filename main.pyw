@@ -54,7 +54,7 @@ class Main_App(CTk.CTk):
             key_name=keyboard.KeyCode.from_char(key)
             self.hotkeys[key_name]=key
             self.cooldowns[key]=False
-
+    
         print(self.cooldowns)
 
         keyboard_listener = keyboard.Listener(on_press=self.change_key)
