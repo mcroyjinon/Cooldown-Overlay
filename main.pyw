@@ -30,7 +30,7 @@ class Main_App(CTk.CTk):
         settings_button = CTk.CTkButton(settings_frame,height=15,width=15,text='Settings',command=self.enter_settings)
         settings_button.pack(side='right')
 
-        update_button = CTk.CTkButton(settings_frame,height=15,width=15,text='Update Keybinds')
+        update_button = CTk.CTkButton(settings_frame,height=15,width=15,text='Update Keybinds',command=self.update_keybinds)
         update_button.pack(side='right')
 
         # Create Main Frame holding other Frames
@@ -40,22 +40,8 @@ class Main_App(CTk.CTk):
         self.left_frame, self.left_counter = self.display_frame(main_frame)
         self.right_frame, right_counter = self.display_frame(main_frame)
 
-        #  Find Saves File
-        self.saves = ConfigParser()
-        self.saves.read('saves.ini')
-
-        # Set Important Vars
-        self.hotkeys={}
+        self.update_keybinds()
         self.current_key=None
-        self.cooldowns={}
-
-        # Fill Tables
-        for key in self.saves['keybinds'].keys():
-            key_name=keyboard.KeyCode.from_char(key)
-            self.hotkeys[key_name]=key
-            self.cooldowns[key]=False
-    
-        print(self.cooldowns)
 
         keyboard_listener = keyboard.Listener(on_press=self.change_key)
         keyboard_listener.start()
@@ -119,6 +105,23 @@ class Main_App(CTk.CTk):
         self.after(int(keybind_time)*1000,lambda: self.timed(stored_key,parent_name)) # After Cooldown, do [timed] method
 
         self.cooldowns[self.current_key]=True # Set On Cooldown of Keybind to True
+
+    # Updates Keybind Info after making Changes
+    def update_keybinds(self):
+        #  Find Saves File
+        self.saves = ConfigParser()
+        self.saves.read('saves.ini')
+
+        # Set Important Vars
+        self.hotkeys={}
+        self.cooldowns={}
+
+        # Fill Tables
+        for key in self.saves['keybinds'].keys():
+            key_name=keyboard.KeyCode.from_char(key)
+            self.hotkeys[key_name]=key
+            self.cooldowns[key]=False
+        print(self.cooldowns)
 
 if __name__=='__main__':
     App = Main_App()
