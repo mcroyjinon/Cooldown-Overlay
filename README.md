@@ -5,17 +5,16 @@ This is an application that displays a cooldown timer for a keybind after a mous
 To add more keybinds, go to the [saves.ini] file and follow the directions below:
 
 
-Keybinds
-
+Keybinds  
+  
 Put the Keybind as the first then = to the name for the item going on cooldown
 
 `<Keybind>` = `<Name>`
 
 Ex: 2=test
 
-
-Cooldowns
-
+Cooldowns  
+   
 Put the name of the item then set it equal to the seconds on cooldown
 
 `<Name>` = `<Cooldown Time>`
