@@ -31,6 +31,16 @@ class Input(CTk.CTk):
     def submit(self):
         text = self.entry.get()
 
+        match self.type:
+            case "keybind":
+                if len(text) > 1:
+                    return
+            case "cooldown":
+                try:
+                    int(text)
+                except ValueError:
+                    return
+
         previous_value = self.text_var.get()
         self.text_var.set(text)
 
@@ -56,7 +66,7 @@ class Input(CTk.CTk):
 
         hwnd = win32gui.FindWindow(None, "Cooldown Overlay: Settings")
         if hwnd:
-            win32gui.PostMessage(hwnd, win32con.WM_CLOSE, 0, 0)
+            self.after(100, win32gui.PostMessage(hwnd, win32con.WM_CLOSE, 0, 0))
 
         self.after(100, lambda: self.destroy())
 
