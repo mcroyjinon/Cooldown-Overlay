@@ -59,10 +59,7 @@ class Main_App(CTk.CTk):
         keyboard_listener = keyboard.Listener(on_press=self.change_key)
         keyboard_listener.start()
 
-        mouse_listener = mouse.Listener(
-            on_click=lambda x, y, button, pressed: self.display(x, y, button, pressed)
-        )
-        mouse_listener.start()
+        self.mouse_listener = mouse.Listener(on_click=self.display_on_click)
 
     # Create Display Frames
     def display_frame(self, parent):
@@ -88,16 +85,26 @@ class Main_App(CTk.CTk):
     def change_key(self, key):
         if not key in self.hotkeys:
             return
-        codecc = keyboard.KeyCode.from_char(
-            self.current_key
-        )  # Takes Key and Cast as keyboard.KeyCode
-        if (
-            key != codecc
-        ):  # If the Key Pressed doesn't equal Current KeyCode, then set Key as Current Key
+
+        codecc = keyboard.KeyCode.from_char(self.current_key)
+        # Takes Key and Cast as keyboard.KeyCode
+
+        # If the Key Pressed doesn't equal Current KeyCode, then set Key as Current Key
+        if key != codecc:
             self.current_key = self.hotkeys[key]
         elif key == codecc:  # If it does equal, set Current Key as None (Deselected)
             self.current_key = None
         print(self.current_key)
+
+        save_config = self.saves["config"]
+
+        if save_config["click activation"] == "true":
+            self.mouse_listener.start()
+        else:
+            self.display()
+            if save_config["deselect after activation"] == "true":
+                self.current_key = None
+                print(self.current_key)
 
     # Cooldown is Over
     def timed(self, key, parent):
@@ -107,10 +114,8 @@ class Main_App(CTk.CTk):
         ):  # If the Display was on the left side, Decrease [left_counter] by 1
             self.left_counter.set(self.left_counter.get() - 1)
 
-    # Displays the Cooldown on Click
-    def display(self, x, y, button, pressed):
-        if not pressed:
-            return  # If Click is Let Go, then return
+    # Displays Cooldown
+    def display(self):
         if self.current_key == None:
             return  # If No Key is Selected, then return
         if self.cooldowns[self.current_key] == True:
@@ -118,34 +123,37 @@ class Main_App(CTk.CTk):
 
         parent = self.left_frame  # Default Parent is Left
         parent_name = "left"
-        if (
-            self.left_counter.get() > 5
-        ):  # If Left has more than 5 displays, Set Parent to Right
+
+        # If Left has more than 5 displays, Set Parent to Right
+        if self.left_counter.get() > 5:
             parent = self.right_frame
             parent_name = "right"
         else:
-            self.left_counter.set(
-                self.left_counter.get() + 1
-            )  # Else Increment Left Counter by 1
+            self.left_counter.set(self.left_counter.get() + 1)
+            # Else Increment Left Counter by 1
 
-        keybind_name = self.saves["keybinds"][
-            self.current_key
-        ]  # Gets the Name of Keybind
+        keybind_name = self.saves["keybinds"][self.current_key]
+        # Gets the Name of Keybind
 
-        keybind_time = self.saves["cooldowns"][
-            keybind_name
-        ]  # Gets Cooldown  of Keybind
+        keybind_time = self.saves["cooldowns"][keybind_name]
+        # Gets Cooldown  of Keybind
 
-        Hotkey_Display(
-            parent, keybind_name, keybind_time
-        )  # Displays Name and Cooldown Time
+        Hotkey_Display(parent, keybind_name, keybind_time)
+        # Displays Name and Cooldown Time
 
         stored_key = self.current_key  # [self.current_key] changes, so store Key in Var
         self.after(
             int(keybind_time) * 1000, lambda: self.timed(stored_key, parent_name)
-        )  # After Cooldown, do [timed] method
+        )
+        # After Cooldown, do [timed] method
 
         self.cooldowns[self.current_key] = True  # Set On Cooldown of Keybind to True
+
+    # Displays the Cooldown on Click
+    def display_on_click(self, x, y, button, pressed):
+        if not pressed:
+            return  # If Click is Let Go, then return
+        self.display()
 
     # Updates Keybind Info after making Changes
     def update_keybinds(self):
