@@ -158,14 +158,9 @@ class Main_App(CTk.CTk):
         self.saves.read("saves.ini")
 
         # Set Important Vars
-        self.hotkeys = {}
-        self.cooldowns = {}
+        self.hotkeys = {keyboard.KeyCode.from_char(key): key for key in self.saves["keybinds"].keys()}
+        self.cooldowns = {key: False for key in self.saves["keybinds"].keys()}
 
-        # Fill Tables
-        for key in self.saves["keybinds"].keys():
-            key_name = keyboard.KeyCode.from_char(key)
-            self.hotkeys[key_name] = key
-            self.cooldowns[key] = False
         print(self.cooldowns)
 
 
