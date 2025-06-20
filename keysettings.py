@@ -38,20 +38,53 @@ class KeySettings(CTk.CTk):
         self.attributes("-topmost", True)
         self.wm_attributes("-toolwindow", "true")
 
-        main_frame: CTk.CTkScrollableFrame = CTk.CTkScrollableFrame(self, fg_color="transparent")
-        main_frame.pack(fill="both", expand=True)
+        # Tools Frame
+
+        tools_frame: CTk.CTkFrame = CTk.CTkFrame(
+            self,
+            fg_color='transparent'
+        )
+        tools_frame.pack(side='top',fill='x',pady=3,padx=5)
+
+        add_button: CTk.CTkButton = CTk.CTkButton(
+            tools_frame,
+            width=10,
+            height=10,
+            command=self.add_new,
+            text='+'
+        )
+        add_button.pack(side='right')
+
+        # Main Frame
+        self.main_frame: CTk.CTkScrollableFrame = CTk.CTkScrollableFrame(self, fg_color="transparent")
+        self.main_frame.pack(fill="both", expand=True, side='top')
 
         # Access [saves.ini]
-        file: ConfigParser = ConfigParser()
-        file.read("saves.ini")
+        self.file: ConfigParser = ConfigParser()
+        self.file.read("saves.ini")
 
-        keybinds: list[str] = list(file["keybinds"].keys())
-
-        for i in range(0, len(keybinds)):
-            frame = Display(main_frame)
-            frame.display_buttons(i)
+        self.display_keybinds()
 
         self.mainloop()
+
+    def display_keybinds(self):
+        keybinds: list[str] = list(self.file["keybinds"].keys())
+
+        for i in range(0, len(keybinds)):
+            self.display_frame = Display(self.main_frame)
+            self.display_frame.display_buttons(i)
+
+    def add_new(self):
+        for window in self.main_frame.winfo_children():
+            window.destroy()
+
+        self.file['keybinds']['New'] = 'New'
+        self.file['cooldowns']['New'] = 'New'
+
+        with open('saves.ini', 'w') as content:
+            self.file.write(content)
+        
+        self.display_keybinds()
 
 
 if __name__ == "__main__":

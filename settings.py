@@ -2,6 +2,7 @@ import customtkinter as CTk
 from keysettings import KeySettings
 from configparser import ConfigParser
 
+
 class BoolButtons(CTk.CTkButton):
 
     def on_click(self) -> None:
@@ -27,7 +28,6 @@ class BoolButtons(CTk.CTkButton):
         self.value: bool = value
         self.setting: str = setting
 
-        
 
 class Settings(CTk.CTk):
 
@@ -66,15 +66,21 @@ class Settings(CTk.CTk):
         print(settings)
         
         for setting, value in settings.items():
-            frame: CTk.CTkFrame = CTk.CTkFrame(main_frame, fg_color='transparent')
+            frame: CTk.CTkFrame = CTk.CTkFrame(
+                main_frame, 
+                fg_color='transparent',
+                height=5
+            )
 
             setting_label: CTk.CTkLabel = CTk.CTkLabel(
                 frame,
-                height=7,
                 width=5,
-                text=setting
+                text=setting,
+                corner_radius=10,
+                fg_color='light grey',
+                bg_color='transparent'
             )
-            setting_label.pack(side='left',expand=True)
+            setting_label.pack(side='left',expand=True,fill='x')
 
             value_button: BoolButtons = BoolButtons(
                 frame,
@@ -83,7 +89,7 @@ class Settings(CTk.CTk):
             )
             value_button.pack(side='right',expand=True)
 
-            frame.pack(side='top',pady=1,fill='x',padx=5)
+            frame.pack(side='top',pady=5,fill='x',padx=5)
 
         self.mainloop()
 
