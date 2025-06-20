@@ -104,8 +104,8 @@ class Main_App(CTk.CTk):
         elif key == codecc:  # If it does equal, set Current Key as None (Deselected)
             self.current_key.set('None')
         print(self.current_key.get())
-
-        save_config = self.saves["config"]
+        self.saves.read('saves.ini')
+        save_config: str = self.saves["config"]
 
         if save_config["click activation"] == "true":
             pass

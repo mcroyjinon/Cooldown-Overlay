@@ -1,3 +1,4 @@
 *.pyc
 /customtkinter
 /__pycache__
+/customtkinter
