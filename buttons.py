@@ -7,7 +7,7 @@ import win32con
 
 class Input(CTk.CTk):
 
-    def __init__(self, key, type, text_var):
+    def __init__(self, key: str, type: str, text_var: CTk.StringVar):
         super().__init__()
 
         self.geometry("300x100")
@@ -16,20 +16,20 @@ class Input(CTk.CTk):
         self.attributes("-topmost", True)
         self.wm_attributes("-toolwindow", "true")
 
-        self.key = key
-        self.type = type
-        self.text_var = text_var
+        self.key: str = key
+        self.type: str = type
+        self.text_var: CTk.StringVar = text_var
 
-        self.entry = CTk.CTkEntry(master=self, width=30)
+        self.entry: CTk.CTkEntry = CTk.CTkEntry(master=self, width=30)
         self.entry.pack(side="top", pady=15, fill="x", padx=5)
 
-        enter = CTk.CTkButton(master=self, width=30, text="Enter", command=self.submit)
+        enter: CTk.CTkButton = CTk.CTkButton(master=self, width=30, text="Enter", command=self.submit)
         enter.pack(side="top")
 
         self.mainloop()
 
     def submit(self):
-        text = self.entry.get()
+        text: str = self.entry.get()
 
         match self.type:
             case "keybind":
@@ -41,21 +41,21 @@ class Input(CTk.CTk):
                 except ValueError:
                     return
 
-        previous_value = self.text_var.get()
+        previous_value: str = self.text_var.get()
         self.text_var.set(text)
 
-        save_file = ConfigParser()
+        save_file: ConfigParser = ConfigParser()
         save_file.read("saves.ini")
 
         match self.type:
             case "keybind":
-                saved_value = save_file["keybinds"][previous_value]
+                saved_value: str = save_file["keybinds"][previous_value]
                 save_file.remove_option("keybinds", previous_value)
                 save_file["keybinds"][text] = saved_value
             case "name":
                 save_file["keybinds"][self.key] = text
 
-                saved_value = save_file["cooldowns"][previous_value]
+                saved_value: str = save_file["cooldowns"][previous_value]
                 save_file.remove_option("cooldowns", previous_value)
                 save_file["cooldowns"][text] = saved_value
             case "cooldown":
@@ -64,7 +64,7 @@ class Input(CTk.CTk):
         with open("saves.ini", "w") as file:
             save_file.write(file)
 
-        hwnd = win32gui.FindWindow(None, "Cooldown Overlay: Settings")
+        hwnd: int|None = win32gui.FindWindow(None, "Cooldown Overlay: Settings")
         if hwnd:
             self.after(100, win32gui.PostMessage(hwnd, win32con.WM_CLOSE, 0, 0))
 
@@ -73,12 +73,12 @@ class Input(CTk.CTk):
 
 class ChangeableButtons(CTk.CTkButton):
 
-    def __init__(self, parent, key, type):
+    def __init__(self, parent, key, type:str):
 
-        saves_file = ConfigParser()
+        saves_file: ConfigParser = ConfigParser()
         saves_file.read("saves.ini")
 
-        text_var = CTk.StringVar(master=parent)
+        text_var: CTk.StringVar = CTk.StringVar(master=parent)
 
         match type:
             case "keybind":

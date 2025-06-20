@@ -12,18 +12,18 @@ class Display(CTk.CTkFrame):
 
     def display_buttons(self, index):
         # Access [saves.ini]
-        file = ConfigParser()
+        file: ConfigParser = ConfigParser()
         file.read("saves.ini")
 
-        keybinds = list(file["keybinds"].keys())
+        keybinds: list[str] = list(file["keybinds"].keys())
 
-        keybind_button = ChangeableButtons(self, keybinds[index], "keybind")
+        keybind_button: ChangeableButtons = ChangeableButtons(self, keybinds[index], "keybind")
         keybind_button.pack(expand=True, side="left", fill="x", padx=2.5)
 
-        name_button = ChangeableButtons(self, keybinds[index], "name")
+        name_button: ChangeableButtons = ChangeableButtons(self, keybinds[index], "name")
         name_button.pack(expand=True, side="left", fill="x", padx=2.5)
 
-        cooldown_button = ChangeableButtons(self, keybinds[index], "cooldown")
+        cooldown_button: ChangeableButtons = ChangeableButtons(self, keybinds[index], "cooldown")
         cooldown_button.pack(expand=True, side="left", fill="x", padx=2.5)
 
 
@@ -38,14 +38,14 @@ class Settings(CTk.CTk):
         self.attributes("-topmost", True)
         self.wm_attributes("-toolwindow", "true")
 
-        main_frame = CTk.CTkScrollableFrame(self, fg_color="transparent")
+        main_frame: CTk.CTkScrollableFrame = CTk.CTkScrollableFrame(self, fg_color="transparent")
         main_frame.pack(fill="both", expand=True)
 
         # Access [saves.ini]
-        file = ConfigParser()
+        file: ConfigParser = ConfigParser()
         file.read("saves.ini")
 
-        keybinds = list(file["keybinds"].keys())
+        keybinds: list[str] = list(file["keybinds"].keys())
 
         for i in range(0, len(keybinds)):
             frame = Display(main_frame)
