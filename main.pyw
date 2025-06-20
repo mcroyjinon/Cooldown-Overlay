@@ -22,7 +22,9 @@ class Main_App(CTk.CTk):
         self.title("Cooldown Overlay")
 
         self.attributes("-topmost", True)  # Always Ontop
-        self.wm_attributes("-toolwindow", "true")  # Toolwindow Mode
+        #self.wm_attributes("-toolwindow", "true")  # Toolwindow Mode
+
+        self.current_key: CTk.StringVar = CTk.StringVar(self, value='None')
 
         # Create Frame to hold + button
         settings_frame: CTk.CTkFrame = CTk.CTkFrame(self, fg_color="transparent")
@@ -46,6 +48,13 @@ class Main_App(CTk.CTk):
         )
         update_button.pack(side="right")
 
+        current_frame: CTk.CTkLabel = CTk.CTkLabel(
+            settings_frame,
+            width=7,
+            textvariable=self.current_key
+        )
+        current_frame.pack(side='left')
+
         # Create Main Frame holding other Frames
         main_frame: CTk.CTkFrame = CTk.CTkFrame(self, fg_color="transparent")
         main_frame.pack(fill="both", expand="true", pady=0, padx=5, side="top")
@@ -54,7 +63,6 @@ class Main_App(CTk.CTk):
         self.right_frame, right_counter = self.display_frame(main_frame)
 
         self.update_keybinds()
-        self.current_key: str | None = None
 
         keyboard_listener: keyboard.Listener = keyboard.Listener(on_press=self.change_key)
         keyboard_listener.start()
@@ -87,15 +95,15 @@ class Main_App(CTk.CTk):
         if not key in self.hotkeys:
             return
 
-        codecc = keyboard.KeyCode.from_char(self.current_key)
+        codecc = keyboard.KeyCode.from_char(self.current_key.get())
         # Takes Key and Cast as keyboard.KeyCode
 
         # If the Key Pressed doesn't equal Current KeyCode, then set Key as Current Key
         if key != codecc:
-            self.current_key = self.hotkeys[key]
+            self.current_key.set(self.hotkeys[key])
         elif key == codecc:  # If it does equal, set Current Key as None (Deselected)
-            self.current_key = None
-        print(self.current_key)
+            self.current_key.set('None')
+        print(self.current_key.get())
 
         save_config = self.saves["config"]
 
@@ -104,8 +112,8 @@ class Main_App(CTk.CTk):
         else:
             self.display()
             if save_config["deselect after activation"] == "true":
-                self.current_key = None
-                print(self.current_key)
+                self.current_key.set('None')
+                print(self.current_key.get())
 
     # Cooldown is Over
     def timed(self, key: str, parent: str) -> None:
@@ -115,8 +123,8 @@ class Main_App(CTk.CTk):
 
     # Displays Cooldown
     def display(self) -> None:
-        if self.current_key == None: return  # If No Key is Selected, then return
-        if self.cooldowns[self.current_key] == True: return  # If Name is already On Cooldown, then return
+        if self.current_key.get() == 'None': return  # If No Key is Selected, then return
+        if self.cooldowns[self.current_key.get()] == True: return  # If Name is already On Cooldown, then return
 
         parent: CTk.CTkFrame = self.left_frame  # Default Parent is Left
         parent_name: str = "left"
@@ -129,7 +137,7 @@ class Main_App(CTk.CTk):
             self.left_counter.set(self.left_counter.get() + 1)
             # Else Increment Left Counter by 1
 
-        keybind_name: str = self.saves["keybinds"][self.current_key]
+        keybind_name: str = self.saves["keybinds"][self.current_key.get()]
         # Gets the Name of Keybind
 
         keybind_time: int = self.saves["cooldowns"][keybind_name]
@@ -138,13 +146,13 @@ class Main_App(CTk.CTk):
         Hotkey_Display(parent, keybind_name, keybind_time)
         # Displays Name and Cooldown Time
 
-        stored_key: str = self.current_key  # [self.current_key] changes, so store Key in Var
+        stored_key: str = self.current_key.get()  # [self.current_key] changes, so store Key in Var
         self.after(
             int(keybind_time) * 1000, lambda: self.timed(stored_key, parent_name)
         )
         # After Cooldown, do [timed] method
 
-        self.cooldowns[self.current_key] = True  # Set On Cooldown of Keybind to True
+        self.cooldowns[self.current_key.get()] = True  # Set On Cooldown of Keybind to True
 
     # Displays the Cooldown on Click
     def display_on_click(self, x: int, y: int, button, pressed:  bool) -> None:
