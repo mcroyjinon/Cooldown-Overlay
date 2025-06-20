@@ -5,7 +5,7 @@ import time
 
 class Hotkey_Label(CTk.CTkLabel):
 
-    def __init__(self, parent, txt):
+    def __init__(self, parent, txt: str):
         super().__init__(master=parent, text=txt)
 
         self.pack(side="left", padx=5)
@@ -13,9 +13,9 @@ class Hotkey_Label(CTk.CTkLabel):
 
 class Hotkey_Cooldown(CTk.CTkLabel):
 
-    def __init__(self, parent, time):
+    def __init__(self, parent, time: int):
 
-        timer = CTk.StringVar()
+        timer: CTk.StringVar = CTk.StringVar()
         timer.set(time)
 
         super().__init__(master=parent, textvariable=timer)
@@ -24,7 +24,7 @@ class Hotkey_Cooldown(CTk.CTkLabel):
 
         counter = int(timer.get())
 
-        def func(i):
+        def func(i: int):
             new_count = str(counter - i)
             self.after(i * 1000, lambda: timer.set(new_count))
 
@@ -35,20 +35,10 @@ class Hotkey_Cooldown(CTk.CTkLabel):
 
 class Hotkey_Display(CTk.CTkFrame):
 
-    def __init__(self, parent, name, time):
+    def __init__(self, parent, name: str, time: int):
         super().__init__(master=parent, width=70, height=20)
         self.pack_propagate(False)
         self.pack(side="top", padx=10, pady=2, fill="x")
 
-        label = Hotkey_Label(self, name)
-        cd = Hotkey_Cooldown(self, time)
-
-
-if __name__ == "__main__":
-    App = CTk.CTk()
-
-    timer = CTk.StringVar()
-    timer.set("30")
-    Hotkey_Display(App, "a", timer)
-
-    App.mainloop()
+        label: Hotkey_Label = Hotkey_Label(self, name)
+        cd: Hotkey_Cooldown = Hotkey_Cooldown(self, time)
