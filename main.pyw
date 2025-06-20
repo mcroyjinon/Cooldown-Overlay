@@ -62,7 +62,7 @@ class Main_App(CTk.CTk):
         self.mouse_listener: mouse.Listener = mouse.Listener(on_click=self.display_on_click)
 
     # Create Display Frames
-    def display_frame(self, parent: CTk.CTkFrame) -> Tuple[CTk.Frame, CTk.CTkFrame]:
+    def display_frame(self, parent: CTk.CTkFrame) -> Tuple[CTk.CTkFrame, CTk.CTkFrame]:
         frame: CTk.CTkFrame = CTk.CTkFrame(parent, fg_color="#b1b1b1", width=130)
         counter: CTk.IntVar = CTk.IntVar(frame, 0)
         frame.pack(side="left", fill="both", expand="true", padx=5)
