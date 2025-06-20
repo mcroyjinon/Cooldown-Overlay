@@ -22,7 +22,7 @@ class Main_App(CTk.CTk):
         self.title("Cooldown Overlay")
 
         self.attributes("-topmost", True)  # Always Ontop
-        #self.wm_attributes("-toolwindow", "true")  # Toolwindow Mode
+        self.wm_attributes("-toolwindow", "true")  # Toolwindow Mode
 
         self.current_key: CTk.StringVar = CTk.StringVar(self, value='None')
 
