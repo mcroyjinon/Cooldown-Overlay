@@ -60,6 +60,7 @@ class Main_App(CTk.CTk):
         keyboard_listener.start()
 
         self.mouse_listener: mouse.Listener = mouse.Listener(on_click=self.display_on_click)
+        self.mouse_listener.start()
 
     # Create Display Frames
     def display_frame(self, parent: CTk.CTkFrame) -> Tuple[CTk.CTkFrame, CTk.CTkFrame]:
@@ -99,7 +100,7 @@ class Main_App(CTk.CTk):
         save_config = self.saves["config"]
 
         if save_config["click activation"] == "true":
-            self.mouse_listener.start()
+            pass
         else:
             self.display()
             if save_config["deselect after activation"] == "true":
