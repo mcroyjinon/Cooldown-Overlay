@@ -34,7 +34,7 @@ class KeySettings(CTk.CTk):
 
         # App Configuration
         self.geometry("300x170")
-        self.title("Cooldown Overlay: Settings")
+        self.title("Cooldown Overlay: Settings: Keybinds")
         self.attributes("-topmost", True)
         self.wm_attributes("-toolwindow", "true")
 
