@@ -22,7 +22,16 @@ class Settings(CTk.CTk):
         main_frame.pack(pady=7,padx=7,expand=True,fill='both')
 
         #Keybind Button
+        keybind_button: CTk.CTkButton = CTk.CTkButton(
+            main_frame,
+            width=15,
+            height=15,
+            command=KeySettings,
+            text='Keybinds'
+        )
+        keybind_button.place(x=215,y=130)
 
+        #Settings
 
         self.mainloop()
 
