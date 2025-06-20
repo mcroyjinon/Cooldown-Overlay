@@ -1,30 +1,32 @@
-import tkinter as Tk
 import customtkinter as CTk
+from keysettings import KeySettings
 from configparser import ConfigParser
-from buttons import ChangeableButtons
 
 
-class Display(CTk.CTkFrame):
+class BoolButtons(CTk.CTkButton):
 
-    def __init__(self, master):
-        super().__init__(master, height=30)
-        self.pack(fill="x", pady=5)
+    def on_click(self) -> None:
+        self.configure(text= 'True' if not self.value else 'False')
+        self.value = not self.value
 
-    def display_buttons(self, index):
-        # Access [saves.ini]
         file: ConfigParser = ConfigParser()
-        file.read("saves.ini")
+        file.read('saves.ini')
 
-        keybinds: list[str] = list(file["keybinds"].keys())
+        file['config'][self.setting] = str(self.value).lower()
 
-        keybind_button: ChangeableButtons = ChangeableButtons(self, keybinds[index], "keybind")
-        keybind_button.pack(expand=True, side="left", fill="x", padx=2.5)
+        with open('saves.ini', 'w') as content:
+            file.write(content)
 
-        name_button: ChangeableButtons = ChangeableButtons(self, keybinds[index], "name")
-        name_button.pack(expand=True, side="left", fill="x", padx=2.5)
+    def __init__(self, master, value: bool,setting: str):
+        super().__init__(
+            master=master,
+            text=str(value),
+            command=self.on_click,
+            width=2
+        )
 
-        cooldown_button: ChangeableButtons = ChangeableButtons(self, keybinds[index], "cooldown")
-        cooldown_button.pack(expand=True, side="left", fill="x", padx=2.5)
+        self.value: bool = value
+        self.setting: str = setting
 
 
 class Settings(CTk.CTk):
@@ -37,22 +39,60 @@ class Settings(CTk.CTk):
         self.title("Cooldown Overlay: Settings")
         self.attributes("-topmost", True)
         self.wm_attributes("-toolwindow", "true")
+        self.resizable(False,False)
 
-        main_frame: CTk.CTkScrollableFrame = CTk.CTkScrollableFrame(self, fg_color="transparent")
-        main_frame.pack(fill="both", expand=True)
+        # Main Frame
+        main_frame: CTk.CTkFrame = CTk.CTkFrame(
+            self,
+            fg_color='grey'
+        )
+        main_frame.pack(pady=7,padx=7,expand=True,fill='both')
 
-        # Access [saves.ini]
+        #Keybind Button
+        keybind_button: CTk.CTkButton = CTk.CTkButton(
+            main_frame,
+            width=15,
+            height=15,
+            command=KeySettings,
+            text='Keybinds'
+        )
+        keybind_button.place(x=215,y=130)
+
+        #Settings
         file: ConfigParser = ConfigParser()
-        file.read("saves.ini")
+        file.read('saves.ini')
 
-        keybinds: list[str] = list(file["keybinds"].keys())
+        settings: dict[str: bool] = {key: (True if value == 'true' else False) for key, value in file['config'].items()}
+        print(settings)
+        
+        for setting, value in settings.items():
+            frame: CTk.CTkFrame = CTk.CTkFrame(
+                main_frame, 
+                fg_color='transparent',
+                height=5
+            )
 
-        for i in range(0, len(keybinds)):
-            frame = Display(main_frame)
-            frame.display_buttons(i)
+            setting_label: CTk.CTkLabel = CTk.CTkLabel(
+                frame,
+                width=5,
+                text=setting,
+                corner_radius=10,
+                fg_color='light grey',
+                bg_color='transparent'
+            )
+            setting_label.pack(side='left',expand=True,fill='x')
+
+            value_button: BoolButtons = BoolButtons(
+                frame,
+                value,
+                setting
+            )
+            value_button.pack(side='right',expand=True)
+
+            frame.pack(side='top',pady=5,fill='x',padx=5)
 
         self.mainloop()
 
 
-if __name__ == "__main__":
-    App = Settings()
+if __name__ == '__main__':
+    Settings()

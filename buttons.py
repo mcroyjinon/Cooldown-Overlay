@@ -64,7 +64,7 @@ class Input(CTk.CTk):
         with open("saves.ini", "w") as file:
             save_file.write(file)
 
-        hwnd: int|None = win32gui.FindWindow(None, "Cooldown Overlay: Settings")
+        hwnd: int|None = win32gui.FindWindow(None, "Cooldown Overlay: Settings: Keybinds")
         if hwnd:
             self.after(100, win32gui.PostMessage(hwnd, win32con.WM_CLOSE, 0, 0))
 
